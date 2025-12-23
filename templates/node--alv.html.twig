@@ -1,0 +1,104 @@
+{#
+/**
+ * @file
+ * Theme override to display an 'ALV' node.
+ */
+#}
+
+{%
+  set classes = [
+    'node',
+    'node--type-' ~ node.bundle|clean_class,
+    'clearfix',
+    'py-4'
+  ]
+%}
+
+<article{{ attributes.addClass(classes) }}>
+
+  {# --- 1. NOTULEN (Current) --- #}
+  {% if content.field_notulen|render %}
+    <div class="alv-card shadow-sm rounded-3 p-4 mb-4 bg-white border">
+      {{ content.field_notulen }}
+    </div>
+  {% endif %}
+
+  {# --- 2. AGENDA --- #}
+  {% if content.field_uitnodiging_en_agenda|render %}
+    <div class="alv-card shadow-sm rounded-3 p-4 mb-4 bg-white border">
+      {{ content.field_uitnodiging_en_agenda }}
+    </div>
+  {% endif %}
+
+  {# --- 3. PREVIOUS MINUTES (Manual Loop) --- #}
+  {% if not node.field_notulen_vorige_vergadering.isEmpty() %}
+    <div class="alv-card shadow-sm rounded-3 p-4 mb-4 bg-white border">
+      <div class="field__label">Notulen vorige vergadering</div>
+      <div class="field__item">
+        
+        {# Loop Reference: Get Previous ALV Node #}
+        {% for item in node.field_notulen_vorige_vergadering %}
+          {% set prev_alv = item.entity %}
+          
+          {# Loop Media: Get the 'Notulen' Media Entity from that ALV #}
+          {% if prev_alv.field_notulen %}
+            {% for media_item in prev_alv.field_notulen %}
+              {% set media_entity = media_item.entity %}
+              
+              {# Loop File: Get the actual File from the Media Entity #}
+              {% if media_entity.field_media_document %}
+                 {% for file_item in media_entity.field_media_document %}
+                    {% set file = file_item.entity %}
+                    
+                    {# RENDER THE CLEAN LINK #}
+                    {# Added target="_blank" here manually #}
+                    <span class="file file--mime-application-pdf file--application-pdf d-block mb-2">
+                      <a href="{{ file_url(file.uri.value) }}" type="application/pdf" target="_blank" rel="noopener">
+                        {{ file.filename.value }}
+                      </a>
+                    </span>
+                 {% endfor %}
+              {% endif %}
+
+            {% endfor %}
+          {% else %}
+             {# Fallback #}
+             <div class="small text-muted">Nog geen notulen beschikbaar voor {{ prev_alv.label }}</div>
+          {% endif %}
+        {% endfor %}
+
+      </div>
+    </div>
+  {% endif %}
+
+  {# --- 4. INCOMING DOCS --- #}
+  {% if content.field_ingekomen_stukken|render %}
+    <div class="alv-card shadow-sm rounded-3 p-4 mb-4 bg-white border">
+      {{ content.field_ingekomen_stukken }}
+    </div>
+  {% endif %}
+
+  {# --- 5. RELEVANT DOCS --- #}
+  {% if content.field_relevante_stukken|render %}
+    <div class="alv-card shadow-sm rounded-3 p-4 mb-4 bg-white border">
+      {{ content.field_relevante_stukken }}
+    </div>
+  {% endif %}
+
+  {# Cleanup #}
+  {{ content|without('field_date', 'field_categorie', 'field_notulen', 'field_uitnodiging_en_agenda', 'field_notulen_vorige_vergadering', 'field_ingekomen_stukken', 'field_relevante_stukken') }}
+
+  {# --- FORCE BLANK TARGETS --- #}
+  {# This small script ensures all links inside your ALV cards (including the ones rendered by Drupal default formatters) open in a new tab. #}
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      // Select all links inside .alv-card that link to files or other pages
+      const links = document.querySelectorAll('.alv-card a');
+      links.forEach(function(link) {
+        link.setAttribute('target', '_blank');
+        link.setAttribute('rel', 'noopener');
+      });
+    });
+  </script>
+
+</article>

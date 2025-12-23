@@ -1,0 +1,146 @@
+/* --- 1. GENERAL SITE FIXES --- */
+div.field.field--name-field-notulen-vorige-vergadering.field--type-entity-reference.field--label-above > div.field__item > article > h2 { display: none; }
+.block-hr { display: none !important; }
+#views-bootstrap-sponsors-block-1 .carousel-inner img { height: 100px; width: auto; object-fit: contain; }
+.fullscreen-carousel, .fullscreen-carousel .carousel, .fullscreen-carousel .carousel-inner, .fullscreen-carousel .carousel-item, .fullscreen-carousel .carousel-item img { height: 100vh; width: 100vw; }
+.fullscreen-carousel .carousel-item img { object-fit: contain; }
+#views-bootstrap-activiteiten-block-2 img { width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; }
+#views-form-todo-block-1-1 #edit-actions--2 { display: none !important; }
+
+/* --- LOGO FIX (Reverted + Padding) --- */
+#logo { 
+    /* 1. Define the maximum size */
+    max-height: 70px !important; 
+    
+    /* 2. Add breathing room (Padding) */
+    padding: 10px 0 !important; /* 10px top/bottom, 0 left/right */
+    
+    /* 3. Prevent distortion */
+    width: auto !important; 
+    height: auto !important;
+}
+
+#logo img {
+    max-height: 100% !important; /* Ensure image stays inside the padded container */
+    width: auto !important;
+    height: auto !important;
+}
+
+/* Optional: Slight adjustment for Desktop if needed */
+@media (min-width: 992px) {
+    #logo { 
+        padding: 5px 0 !important; /* Less padding on desktop if desired */
+    }
+}
+
+/* --- 2. SIDE-BY-SIDE LAYOUT FIX --- */
+@media (min-width: 992px) {
+  .navbar-header-wrapper {
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+  }
+  #dxpr-theme-main-menu {
+    flex-grow: 1;
+    display: flex !important;
+    justify-content: flex-end;
+  }
+
+  /* FORCE DROPDOWNS ON HOVER */
+  .nav-item.dropdown:hover > .dropdown-menu {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+}
+
+/* --- 3. THE "TOGETHER" HOVER FIX (CLEAN VERSION) --- */
+
+/* 1. Base Wrapper Setup */
+.bs-dropdown-wrapper {
+    display: inline-flex !important;
+    align-items: stretch;
+    border-radius: 6px !important; 
+    overflow: hidden; 
+    background-color: transparent; 
+    transition: background-color 0.15s ease;
+}
+
+/* 2. Apply background to the ENTIRE wrapper when either part is hovered */
+#navbar .nav-item.dropdown:hover .bs-dropdown-wrapper {
+    background-color: var(--dxpr-theme-secondary-bg) !important;
+}
+
+/* 3. Strip backgrounds from children to let the parent color show through */
+#navbar .bs-dropdown-wrapper .nav-link,
+#navbar .bs-dropdown-wrapper .nav-link:hover,
+#navbar .bs-dropdown-wrapper .bs-dropdown-caret {
+    background-color: transparent !important;
+    border: none !important;
+}
+
+/* 4. Color sync */
+.nav-item.dropdown:hover .nav-link,
+.nav-item.dropdown:hover .bs-dropdown-caret {
+    color: var(--dxpr-theme-secondary-text) !important;
+}
+
+/* 5. Caret specific hover background logic */
+#navbar .bs-dropdown-wrapper .bs-dropdown-caret:hover { 
+  background-color: var(--dxt-setting-menu-hover-background, rgba(255,255,255,0.1)) !important;
+}
+
+.bs-dropdown-caret {
+    padding: 0 12px !important;
+    margin-left: -5px; 
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+/* --- 4. DROPDOWN BOX FIXES --- */
+
+ul.dropdown-menu.level-2 {
+    border-radius: 6px !important;
+    border: 1px solid rgba(0,0,0,0.15) !important;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.175);
+    padding: 5px 0 !important;
+}
+
+ul.dropdown-menu-columns-2 {
+    min-width: 520px !important;
+}
+
+ul.dropdown-menu-columns-2 > li {
+    display: inline-block !important;
+    width: 50% !important; 
+    vertical-align: top !important; 
+    float: none !important;
+    position: relative;
+}
+
+.dropdown-item {
+    white-space: normal !important; 
+    padding: 10px 15px !important;
+    border-radius: 0 !important;
+    margin: 0 !important;        
+    display: block !important;
+    width: 100% !important;     
+    transition: all 0.2s ease;
+}
+
+.dropdown-item:hover {
+    background-color: var(--dxpr-theme-secondary-bg) !important;
+    color: var(--dxpr-theme-secondary-text) !important;
+}
+
+/* node--alv.html.twig */ 
+.alv-card .field__label {
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+  color: #6c757d;
+  margin-bottom: 1rem;
+  display: block;
+}

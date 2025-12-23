@@ -1,0 +1,14 @@
+{% for item in items %}
+  {% if item.content['#url'] is defined and item.content['#url'] %}
+  <pretix-widget event="{{ item.content['#url'] }}"></pretix-widget>
+  <noscript>
+    <div class="pretix-widget">
+      <div class="pretix-widget-info-message">
+        JavaScript is disabled in your browser. To access our ticket shop without JavaScript, please 
+        <a target="_blank" rel="noopener" href="{{ item.content['#url'] }}">click here</a>.
+      </div>
+    </div>
+  </noscript>
+  {% endif %}
+{% endfor %}
+

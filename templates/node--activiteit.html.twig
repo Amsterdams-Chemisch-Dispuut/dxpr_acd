@@ -1,0 +1,132 @@
+{#
+/**
+ * @file
+ * Theme override to display an 'Activiteit' node.
+ */
+#}
+
+{%
+  set classes = [
+    'node',
+    'node--type-' ~ node.bundle|clean_class,
+    node.isPromoted() ? 'node--promoted',
+    node.isSticky() ? 'node--sticky',
+    not node.isPublished() ? 'node--unpublished',
+    view_mode ? 'node--view-mode-' ~ view_mode|clean_class,
+    'clearfix',
+    'py-4'
+  ]
+%}
+
+<article{{ attributes.addClass(classes) }}>
+
+  {# --- 1. HERO IMAGE --- #}
+  {% if content.field_afbeelding|render %}
+    <div class="row mb-5">
+      <div class="col-12">
+        <div class="rounded-3 overflow-hidden shadow-sm">
+          {{ content.field_afbeelding }}
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
+  <div class="row gx-5">
+    
+    {# --- 2. MAIN CONTENT COLUMN --- #}
+    <div class="col-lg-8 order-2 order-lg-1">
+      
+      {# Description #}
+      {# Note: Ensure the label for this field is set to 'Hidden' in 'Manage Display' #}
+      <div class="content-body mb-5">
+        {{ content.field_activity_beschrijving }}
+      </div>
+
+      {# --- PRETIX TICKET SHOP --- #}
+      {% if not node.field_pretix.isEmpty() %}
+        <div id="tickets" class="mt-5 pt-4 border-top">
+          {# Header with Icon #}
+          <h3 class="h4 mb-4 d-flex align-items-center text-dark">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-ticket-perforated me-2 text-muted" viewBox="0 0 16 16">
+              <path d="M4 4.85v.9h1v-.9H4Zm7 0v.9h1v-.9h-1Zm-7 1.8v.9h1v-.9H4Zm7 0v.9h1v-.9h-1Zm-7 1.8v.9h1v-.9H4Zm7 0v.9h1v-.9h-1Zm-7 1.8v.9h1v-.9H4Zm7 0v.9h1v-.9h-1Zm-7 1.8v.9h1v-.9H4Zm7 0v.9h1v-.9h-1Zm-7 1.8v.9h1v-.9H4Zm7 0v.9h1v-.9h-1Z"/>
+              <path d="M1.5 3A1.5 1.5 0 0 0 0 4.5V6a.5.5 0 0 1-.5.5 1.5 1.5 0 1 1 0 3 .5.5 0 0 1 .5.5v1.5A1.5 1.5 0 0 0 1.5 13h13a1.5 1.5 0 0 0 1.5-1.5V10a.5.5 0 0 1 .5-.5 1.5 1.5 0 1 1 0-3 .5.5 0 0 1-.5-.5V4.5A1.5 1.5 0 0 0 14.5 3h-13ZM1 4.5a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 .5.5v1.05a2.5 2.5 0 0 0 0 4.9v1.05a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-1.05a2.5 2.5 0 0 0 0-4.9V4.5Z"/>
+            </svg>
+            {{ 'Tickets'|t }}
+          </h3>
+          
+          <div class="pretix-wrapper">
+            {{ content.field_pretix }}
+          </div>
+        </div>
+      {% endif %}
+
+    </div>
+
+    {# --- 3. SIDEBAR DETAILS COLUMN --- #}
+    <div class="col-lg-4 order-1 order-lg-2 mb-4 mb-lg-0">
+      
+      {# Sticky Card for Details #}
+      <div class="card bg-light border-0 shadow-sm sticky-top" style="top: 2rem; z-index: 10;">
+        <div class="card-body">
+{# --- <h4 class="h5 card-title mb-4 border-bottom pb-2">{{ 'Event Info'|t }}</h4> --- #}          
+
+          {# DATE #}
+          <div class="d-flex mb-3">
+            <div class="me-3 text-secondary">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-calendar-event" viewBox="0 0 16 16"><path d="M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1z"/><path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/></svg>
+            </div>
+            <div>
+              <h6 class="fw-bold mb-1">{{ 'When'|t }}</h6>
+              <div class="text-muted">
+                {# 
+                   FIX: Convert raw date string to Unix Timestamp first using |date('U')
+                   This makes it compatible with format_date() for translation.
+                #}
+                {% set start_ts = node.field_datum.value|date('U') %}
+                {% set end_ts = node.field_datum.end_value|date('U') %}
+                
+                {# Check if Start Day matches End Day #}
+                {% if start_ts|format_date('custom', 'Ymd') == end_ts|format_date('custom', 'Ymd') %}
+                   
+                   {# 1. Date: "Mon, 12 Jan" (Localized) #}
+                   {{ start_ts|format_date('custom', 'D, d M Y') }}
+                   <br>
+                   
+                   {# 2. Time: "12:15 - 17:00" #}
+                   {{ start_ts|format_date('custom', 'H:i') }} - {{ end_ts|format_date('custom', 'H:i') }}
+                   
+                {% else %}
+                   
+                   {# Fallback for multi-day events #}
+                   {{ content.field_datum }}
+                   
+                {% endif %}
+              </div>
+            </div>
+          </div>
+
+          {# LOCATION #}
+          {% if not node.field_locatie.isEmpty() %}
+            <div class="d-flex mb-3">
+              <div class="me-3 text-secondary">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16"><path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z"/><path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"/></svg>
+              </div>
+              <div>
+                <h6 class="fw-bold mb-1">{{ 'Where'|t }}</h6>
+                <div class="text-muted">
+                  {{ content.field_locatie }}
+                </div>
+              </div>
+            </div>
+          {% endif %}
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  {# Clean remaining content #}
+  {{ content|without('field_afbeelding', 'field_activity_beschrijving', 'field_datum', 'field_locatie', 'field_pretix') }}
+
+</article>

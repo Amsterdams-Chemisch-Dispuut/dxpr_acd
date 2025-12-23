@@ -1,0 +1,150 @@
+/* --- ACD Newsletter Component --- */
+
+/* Main Container */
+.acd-newsletter {
+  /* background-color: #f6e9ff; */
+  color: #202020;
+  font-family: Helvetica, Arial, sans-serif;
+  padding: 20px;
+  max-width: 900px; /* Wider than email for web viewing */
+  margin: 0 auto;
+}
+
+/* Header Styles */
+.acd-newsletter__header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.acd-newsletter__logo img {
+  max-width: 200px;
+  height: auto;
+  margin-bottom: 15px;
+}
+
+.acd-newsletter__socials {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.acd-newsletter__socials img {
+  width: 32px;
+  height: 32px;
+  transition: opacity 0.2s;
+}
+
+.acd-newsletter__socials img:hover {
+  opacity: 0.8;
+}
+
+.acd-newsletter__title-wrapper h1 {
+  font-size: 1.5rem;
+  margin: 5px 0;
+  color: #202020;
+  font-weight: bold;
+}
+
+/* Dividers */
+.acd-newsletter__divider-double {
+  border-top: 5px double #c88feb;
+  margin: 20px 0;
+  width: 100%;
+}
+
+.acd-newsletter__lang-notice {
+  text-align: center;
+  font-style: italic;
+  margin: 20px 0;
+  color: #555;
+}
+
+/* Intro Text */
+.acd-newsletter__intro,
+.acd-vacancies {
+  text-align: justify;
+  line-height: 1.6;
+  margin-bottom: 25px;
+}
+
+/* Grid Layout for Agenda vs Content */
+.acd-newsletter__grid {
+  display: grid;
+  grid-template-columns: 1fr; /* Default mobile: 1 column */
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+@media (min-width: 768px) {
+  .acd-newsletter__grid {
+    /* Desktop: 200px sidebar, rest is main content */
+    grid-template-columns: 250px 1fr; 
+  }
+  
+  /* Special grid for Highlights (50/50 split) */
+  .acd-newsletter__grid--highlight {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Cards (White boxes with purple borders) */
+.acd-card {
+  background-color: #ffffff;
+  border: 7px solid #c88feb;
+  padding: 20px;
+  height: 100%; /* Fill grid height */
+  box-sizing: border-box;
+}
+
+.acd-card__title {
+  color: #c88feb;
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+  margin-top: 0;
+}
+
+.acd-card__body, .acd-text {
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.acd-card hr {
+  border: 0;
+  border-top: 1px solid #ddd;
+  margin: 15px 0;
+}
+
+/* Images & Memes */
+.acd-meme, .acd-image-wrapper {
+  text-align: center;
+}
+
+.acd-meme img, 
+.acd-image-wrapper img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
+/* Section Headers (Molecule, Highlight, Vacancy) */
+.acd-section-header {
+  background-color: #ffffff;
+  border: 7px solid #c88feb;
+  padding: 15px;
+  text-align: center;
+  margin: 30px 0 20px;
+}
+
+.acd-section-header h2 {
+  font-size: 1.4rem;
+  margin: 0;
+  color: #202020;
+}
+
+/* Footer */
+.acd-newsletter__signoff {
+  text-align: center;
+  margin-top: 20px;
+}
