@@ -1,0 +1,27 @@
+/* div.field.field--name-field-notulen-vorige-vergadering.field--type-entity-reference.field--label-above > div.field__item > article > h2 { display: none; } */
+.block-hr { display: none !important; }
+#views-bootstrap-sponsors-block-1 .carousel-inner img { height: 100px; width: auto; object-fit: contain; }
+.fullscreen-carousel, .fullscreen-carousel .carousel, .fullscreen-carousel .carousel-inner, .fullscreen-carousel .carousel-item, .fullscreen-carousel .carousel-item img { height: 100vh; width: 100vw; }
+.fullscreen-carousel .carousel-item img { object-fit: contain; }
+#views-bootstrap-activiteiten-block-2 img { width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; }
+#views-form-todo-block-1-1 #edit-actions--2 { display: none !important; }
+
+/* node--alv.html.twig */ 
+.alv-card .field__label {
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+  color: #6c757d;
+  margin-bottom: 1rem;
+  display: block;
+}
+.card { border-width: 3px !important; }
+/* orange { var(--dxt-color-accent1) }
+primary: var(--dxt-color-base)
+var(--dxt-setting-navbar-background) */
+
+.fc-button-primary {
+  @extend .btn;
+  @extend .btn-primary;
+}

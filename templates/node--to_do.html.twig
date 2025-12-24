@@ -1,0 +1,111 @@
+{#
+/**
+ * @file
+ * Minimal Bootstrap Card for 'Todo' Content Type with Dynamic Colors
+ */
+#}
+
+{# --- LOGIC: Determine Status Color --- #}
+{% set is_done = node.field_status.value %}
+{% set status_class = is_done ? 'bg-success' : 'bg-warning text-dark' %}
+
+{# --- LOGIC: Determine Priority Color --- #}
+{% set priority_val = node.field_priority.value %}
+{% set priority_class = 'bg-secondary' %}
+
+{% if priority_val == 3 %}
+  {% set priority_class = 'bg-danger' %}
+{% elseif priority_val == 2 %}
+  {% set priority_class = 'bg-warning text-dark' %}
+{% elseif priority_val == 1 %}
+  {% set priority_class = 'bg-info text-dark' %}
+{% endif %}
+
+{# --- CARD SETUP --- #}
+{%
+  set classes = [
+    'node',
+    'node--type-' ~ node.bundle|clean_class,
+    node.isPromoted() ? 'node--promoted',
+    node.isSticky() ? 'node--sticky',
+    'card',
+    'mb-3',
+    'shadow-sm'
+  ]
+%}
+
+<a href="/node/add/to_do?destination=/todo" 
+   class="btn btn-primary mb-4">
+    + Add Task
+</a>
+<a href="/todo/{{ user.id }}" 
+   class="btn btn-primary mb-4">
+    My Tasks
+</a>
+<a href="/todo/all" 
+   class="btn btn-primary mb-4">
+    All Tasks
+</a>
+
+<article{{ attributes.addClass(classes) }}>
+
+  {# --- CARD HEADER --- #}
+  <div class="card-header d-flex justify-content-between align-items-center bg-light">
+    <h5{{ title_attributes.addClass('card-title', 'm-0') }}>
+      {% if not page %}
+        <a href="{{ url }}" class="text-decoration-none text-dark">{{ label }}</a>
+      {% else %}
+        {{ label }}
+      {% endif %}
+    </h5>
+    {% if content.field_priority %}
+      <span class="badge {{ priority_class }} border">
+        {{ content.field_priority }}
+      </span>
+    {% endif %}
+  </div>
+
+  {# --- CARD BODY --- #}
+  <div class="card-body">
+    {# Status Label #}
+    {% if content.field_status %}
+      <div class="mb-2">
+        <span class="badge {{ status_class }}">
+          {{ content.field_status|render|striptags|trim }}
+        </span>
+      </div>
+    {% endif %}
+
+    <div class="card-text">
+      {{ content.body }}
+    </div>
+  </div>
+
+  {# --- CARD FOOTER: Actions & Assignee --- #}
+  <div class="card-footer bg-white border-top-0 d-flex justify-content-between align-items-center py-2">
+    
+    {# LEFT: Assignee #}
+    <div class="text-muted" style="font-size: 0.9rem;">
+      {% if content.field_assignee %}
+        <i class="fas fa-user-circle me-1"></i> {{ content.field_assignee|render|striptags }}
+      {% endif %}
+    </div>
+
+    {# RIGHT: Mark Done Button (Only show if NOT done) #}
+    {% if not is_done %}
+      {# 
+         We append ?op=mark_done to the current node URL.
+         ECA will listen for this parameter.
+      #}
+      <a href="{{ url }}?op=mark_done" class="btn btn-success btn-sm shadow-sm">
+        <i class="fas fa-check"></i> Mark Done
+      </a>
+    {% else %}
+       <button class="btn btn-outline-secondary btn-sm" disabled>
+         <i class="fas fa-check-double"></i> Completed
+       </button>
+    {% endif %}
+
+  </div>
+
+</article>

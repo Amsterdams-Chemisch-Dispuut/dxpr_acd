@@ -1,5 +1,6 @@
 global-styling:
   css:
     theme:
-      css/dxpr_theme_subtheme.css: { minified: false, weight: 6 }
+      css/custom.css: { minified: false, weight: 6 }
       css/newsletter.css: { minified: false, weight: 5 }
+      css/navbar.css: { minified: false, weight: 3 }
