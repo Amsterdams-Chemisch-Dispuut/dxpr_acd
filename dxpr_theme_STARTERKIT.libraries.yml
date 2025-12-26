@@ -4,3 +4,9 @@ global-styling:
       css/custom.css: { minified: false, weight: 6 }
       css/newsletter.css: { minified: false, weight: 5 }
       css/navbar.css: { minified: false, weight: 3 }
+  js:
+    js/carousel-events.js: {}
+    js/carousel-sponsors.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal
