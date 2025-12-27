@@ -21,7 +21,10 @@
 primary: var(--dxt-color-base)
 var(--dxt-setting-navbar-background) */
 
-.fc-button-primary {
-  @extend .btn;
-  @extend .btn-primary;
+/* Hide ACID block on mobile screens (under 768px) */
+@media (max-width: 767.98px) {
+  /* Using ID selector for higher specificity */
+  #block-dxpr-theme-starterkit-views-block-acid-block-1 {
+    display: none !important;
+  }
 }
