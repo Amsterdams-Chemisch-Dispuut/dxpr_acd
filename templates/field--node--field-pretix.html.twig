@@ -1,5 +1,6 @@
 {% for item in items %}
   {% if item.content['#url'] is defined and item.content['#url'] %}
+  <script type="text/javascript" src="https://pretix.acdweb.nl/widget/v2.en.js" async crossorigin></script>
   <pretix-widget event="{{ item.content['#url'] }}"></pretix-widget>
   <noscript>
     <div class="pretix-widget">
@@ -11,4 +12,3 @@
   </noscript>
   {% endif %}
 {% endfor %}
-
