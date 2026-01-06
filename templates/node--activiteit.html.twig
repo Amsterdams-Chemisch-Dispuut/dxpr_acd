@@ -37,7 +37,6 @@
     <div class="col-lg-8 order-2 order-lg-1">
       
       {# Description #}
-      {# Note: Ensure the label for this field is set to 'Hidden' in 'Manage Display' #}
       <div class="content-body mb-5">
         {{ content.field_activity_beschrijving }}
       </div>
@@ -68,9 +67,8 @@
       {# Sticky Card for Details #}
       <div class="card bg-light border-0 shadow-sm sticky-top" style="top: 2rem; z-index: 10;">
         <div class="card-body">
-{# --- <h4 class="h5 card-title mb-4 border-bottom pb-2">{{ 'Event Info'|t }}</h4> --- #}          
 
-          {# DATE #}
+          {# --- DATE SECTION --- #}
           <div class="d-flex mb-3">
             <div class="me-3 text-secondary">
               <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-calendar-event" viewBox="0 0 16 16"><path d="M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1z"/><path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/></svg>
@@ -78,35 +76,57 @@
             <div>
               <h6 class="fw-bold mb-1">{{ 'When'|t }}</h6>
               <div class="text-muted">
-                {# 
-                   FIX: Convert raw date string to Unix Timestamp first using |date('U')
-                   This makes it compatible with format_date() for translation.
-                #}
-                {% set start_ts = node.field_datum.value|date('U') %}
-                {% set end_ts = node.field_datum.end_value|date('U') %}
-                
-                {# Check if Start Day matches End Day #}
-                {% if start_ts|format_date('custom', 'Ymd') == end_ts|format_date('custom', 'Ymd') %}
-                   
-                   {# 1. Date: "Mon, 12 Jan" (Localized) #}
-                   {{ start_ts|format_date('custom', 'D, d M Y') }}
-                   <br>
-                   
-                   {# 2. Time: "12:15 - 17:00" #}
-                   {{ start_ts|format_date('custom', 'H:i') }} - {{ end_ts|format_date('custom', 'H:i') }}
-                   
-                {% else %}
-                   
-                   {# Fallback for multi-day events #}
-                   {{ content.field_datum }}
-                   
+                {% if not node.field_datum.isEmpty() %}
+                  {# 
+                     DATE FIX (The "Zulu" Method):
+                     1. Get RAW DB String (e.g., '2026-01-09T16:00:00').
+                     2. Append 'Z' to force PHP to treat it as UTC input.
+                     3. Parse to Timestamp.
+                     4. format_date will then correctly add +1/+2 hours for Amsterdam.
+                  #}
+                  {% set start_raw = node.field_datum.value %}
+                  {% set end_raw = node.field_datum.end_value %}
+                  
+                  {% if start_raw %}
+                    {# Append 'Z' (UTC) to string, convert to timestamp #}
+                    {% set start_ts = (start_raw ~ 'Z')|date('U') %}
+                    
+                    {% if end_raw %}
+                      {% set end_ts = (end_raw ~ 'Z')|date('U') %}
+                    {% else %}
+                      {% set end_ts = start_ts %}
+                    {% endif %}
+                    
+                    {% if start_ts|format_date('custom', 'Ymd') == end_ts|format_date('custom', 'Ymd') %}
+                      {{ start_ts|format_date('custom', 'D, d M Y') }}<br>
+                      {{ start_ts|format_date('custom', 'H:i') }} - {{ end_ts|format_date('custom', 'H:i') }}
+                    {% else %}
+                      {{ content.field_datum }}
+                    {% endif %}
+                  {% endif %}
                 {% endif %}
               </div>
             </div>
           </div>
 
-          {# LOCATION #}
-          {% if not node.field_locatie.isEmpty() %}
+          {# --- LOCATION SECTION (Untouched) --- #}
+          {# Initialize variables #}
+          {% set addr_item = null %}
+          
+          {% if not node.field_location.isEmpty() %}
+             {# Reference Entity -> Field Adres #}
+             {% set loc_entity = node.field_location.entity %}
+             {% if loc_entity and not loc_entity.field_adres.isEmpty() %}
+                {% set addr_item = loc_entity.field_adres.0 %}
+             {% endif %}
+          
+          {% elseif not node.field_locatie.isEmpty() %}
+             {# Direct Field #}
+             {% set addr_item = node.field_locatie.0 %}
+          {% endif %}
+
+          {# RENDER OUTPUT #}
+          {% if addr_item %}
             <div class="d-flex mb-3">
               <div class="me-3 text-secondary">
                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16"><path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z"/><path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"/></svg>
@@ -114,7 +134,17 @@
               <div>
                 <h6 class="fw-bold mb-1">{{ 'Where'|t }}</h6>
                 <div class="text-muted">
-                  {{ content.field_locatie }}
+                  
+                  {# Address Field vs Text Field check #}
+                  {% if addr_item.address_line1 is defined or addr_item.locality is defined %}
+                    {% if addr_item.organization %}{{ addr_item.organization }}<br>{% endif %}
+                    {% if addr_item.address_line1 %}{{ addr_item.address_line1 }}<br>{% endif %}
+                    {% if addr_item.address_line2 %}{{ addr_item.address_line2 }}<br>{% endif %}
+                    {{ addr_item.postal_code }} {{ addr_item.locality }}
+                  {% else %}
+                    {{ addr_item.value|nl2br }}
+                  {% endif %}
+
                 </div>
               </div>
             </div>
@@ -127,6 +157,6 @@
   </div>
 
   {# Clean remaining content #}
-  {{ content|without('field_afbeelding', 'field_activity_beschrijving', 'field_datum', 'field_locatie', 'field_pretix') }}
+  {{ content|without('field_afbeelding', 'field_activity_beschrijving', 'field_datum', 'field_locatie', 'field_location', 'field_pretix') }}
 
 </article>

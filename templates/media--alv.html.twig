@@ -1,0 +1,13 @@
+<span>
+{%- if not media.field_agendapunt.isEmpty -%}
+  {{ media.field_agendapunt.value }}.&nbsp;
+{%- endif -%}
+
+{%- if not media.field_media_file_2.isEmpty -%}
+  <a href="{{ file_url(media.field_media_file_2.entity.uri.value|trim) }}" target="_blank" rel="noopener">{{ name|trim }}</a>
+{%- endif -%}
+
+{%- if not media.field_updated.isEmpty -%}
+  &nbsp;(<a href="{{ file_url(media.field_updated.entity.uri.value|trim) }}" target="_blank" rel="noopener">gewijzigde versie</a>)
+{%- endif -%}
+</span>
