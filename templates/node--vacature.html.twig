@@ -1,0 +1,170 @@
+{#
+/**
+ * @file
+ * Theme override to display a 'Vacature' node.
+ */
+#}
+
+{%
+  set classes = [
+    'node',
+    'node--type-' ~ node.bundle|clean_class,
+    node.isPromoted() ? 'node--promoted',
+    node.isSticky() ? 'node--sticky',
+    not node.isPublished() ? 'node--unpublished',
+    view_mode ? 'node--view-mode-' ~ view_mode|clean_class,
+    'clearfix',
+    'py-4'
+  ]
+%}
+
+{# --- BADGE COLOR LOGIC --- #}
+{% set type_value = node.field_type.value %}
+{% set type_label = content.field_type|render|striptags|trim %}
+{% set badge_class = 'bg-secondary' %}
+
+{% if type_value == 'fulltime' %}
+  {% set badge_class = 'bg-warning' %}
+{% elseif type_value == 'parttime' %}
+  {% set badge_class = 'bg-info text-dark' %}
+{% elseif type_value == 'bijles' %}
+  {% set badge_class = 'bg-success' %}
+{% elseif type_value == 'internship' or type_value == 'thesis' %}
+  {% set badge_class = 'bg-danger' %} 
+{% endif %}
+
+
+<article{{ attributes.addClass(classes) }}>
+
+  <div class="row gx-5">
+    
+    {# --- 1. MAIN CONTENT COLUMN --- #}
+    <div class="col-lg-8 order-2 order-lg-1">
+      <div class="content-body mb-5">
+        {{ content.body }}
+      </div>
+    </div>
+
+    {# --- 2. SIDEBAR DETAILS COLUMN --- #}
+    <div class="col-lg-4 order-1 order-lg-2 mb-4 mb-lg-0">
+      
+      {# Sticky Wrapper #}
+      <div class="sticky-top" style="top: 2rem; z-index: 10;">
+        
+        {# --- BOX 1: SPONSOR --- #}
+        {% if not node.field_bedrijf.isEmpty() %}
+              
+              {# A. Get Sponsor Entity #}
+              {% set sponsor = node.field_bedrijf.entity %}
+
+              {# B. Resolve Image URL (Handles both Media Entities and Direct Images) #}
+              {% set image_url = '' %}
+              {% set image_alt = '' %}
+
+              {# Try Direct Image Field first #}
+              {% if sponsor.field_logo.entity.uri.value %}
+                 {% set image_url = file_url(sponsor.field_logo.entity.uri.value) %}
+                 {% set image_alt = sponsor.field_logo.alt %}
+              {# Try Media Entity Reference (Common in modern Drupal) #}
+              {% elseif sponsor.field_logo.entity.field_media_image.entity.uri.value %}
+                 {% set image_url = file_url(sponsor.field_logo.entity.field_media_image.entity.uri.value) %}
+                 {% set image_alt = sponsor.field_logo.entity.field_media_image.alt %}
+              {% endif %}
+
+              {# C. Render Logo Wrapped in Link #}
+              {% if image_url %}
+                <div class="mb-3">
+                  {% if not sponsor.field_url.isEmpty() %}
+                    {# Wrap in Link if URL exists #}
+                    <a href="{{ sponsor.field_url.uri }}" target="_blank" rel="noopener noreferrer">
+                      <img src="{{ image_url }}" alt="{{ image_alt }}" class="img-fluid rounded">
+                    </a>
+                  {% else %}
+                    {# Just Image if no URL #}
+                    <img src="{{ image_url }}" alt="{{ image_alt }}" class="img-fluid rounded">
+                  {% endif %}
+                </div>
+              {% endif %}
+
+        {% endif %}
+
+        {# --- BOX 2: CONTACT INFO --- #}
+        {% if not node.field_contactpersoon.isEmpty() or not node.field_email.isEmpty() or not node.field_telefoonnummer.isEmpty() or not node.field_link.isEmpty() %}
+          <div class="card bg-light border-0 shadow-sm">
+            <div class="card-body">
+
+            {# Type Badge #}
+            {% if type_value %}
+                <span class="badge rounded-pill mb-3 {{ badge_class }}">
+                {{ type_label }}
+                </span>
+            {% endif %}
+
+
+            {# Link #}
+              {% if not node.field_link.isEmpty() %}
+                <div class="d-flex align-items-center">
+                  <div class="me-3 text-secondary text-center" style="width: 24px;">
+                    <i class="fas fa-globe"></i>
+                  </div>
+                  <div>
+                    <a href="{{ node.field_link.0.url }}" target="_blank" rel="noopener">Read more</a>
+                  </div>
+                </div>
+              {% endif %}
+
+              {% if not node.field_deadline.isEmpty() %}
+              <div class="d-flex align-items-center">
+                  <div class="me-3 text-secondary text-center" style="width: 24px;">
+                    <i class="fas fa-calendar-alt"></i>
+                  </div>
+                  <div>
+                    {{ node.field_deadline.value|date('U')|format_date('custom', 'D, d M Y') }}
+                  </div>
+                </div>
+              {% endif %}
+
+            <h5 class="fw-bold mb-1 pt-3">{{ 'Contact'|t }}</h5>
+
+              {# Contact Person #}
+              {% if not node.field_contactpersoon.isEmpty() %}
+                <div class="d-flex align-items-center mb-0">
+                  <div class="me-3 text-secondary text-center" style="width: 24px;">
+                    <i class="fas fa-user"></i>
+                  </div>
+                  <div>{{ content.field_contactpersoon }}</div>
+                </div>
+              {% endif %}
+
+              {# Email #}
+              {% if not node.field_email.isEmpty() %}
+                <div class="d-flex align-items-center mb-0">
+                  <div class="me-3 text-secondary text-center" style="width: 24px;">
+                    <i class="fas fa-envelope"></i>
+                  </div>
+                  <div class="text-break">{{ content.field_email }}</div>
+                </div>
+              {% endif %}
+
+              {# Phone #}
+              {% if not node.field_telefoonnummer.isEmpty() %}
+                <div class="d-flex align-items-center mb-0">
+                  <div class="me-3 text-secondary text-center" style="width: 24px;">
+                    <i class="fas fa-phone"></i>
+                  </div>
+                  <div>{{ content.field_telefoonnummer }}</div>
+                </div>
+              {% endif %}
+
+            </div>
+          </div>
+        {% endif %}
+
+      </div>
+    </div>
+
+  </div>
+
+  {{ content|without('field_afbeelding', 'body', 'field_bedrijf', 'field_contactpersoon', 'field_email', 'field_telefoonnummer', 'field_link', 'field_pretix', 'field_datum', 'field_locatie', 'field_location', 'field_type', 'field_deadline') }}
+
+</article>

@@ -1,0 +1,111 @@
+{#
+/**
+ * @file
+ * Theme override to display a 'Vacature' node in 'Teaser' view mode.
+ */
+#}
+
+{%
+  set classes = [
+    'node',
+    'node--type-' ~ node.bundle|clean_class,
+    view_mode ? 'node--view-mode-' ~ view_mode|clean_class,
+    'clearfix',
+    'border', 'rounded-3', 'p-4', 'mb-4', 'bg-white' 
+  ]
+%}
+
+{# --- BADGE COLOR LOGIC --- #}
+{% set type_value = node.field_type.value %}
+{% set type_label = content.field_type|render|striptags|trim %}
+{% set badge_class = 'bg-secondary' %}
+
+{% if type_value == 'fulltime' %}
+  {% set badge_class = 'bg-warning' %}
+{% elseif type_value == 'parttime' %}
+  {% set badge_class = 'bg-info text-dark' %}
+{% elseif type_value == 'bijles' %}
+  {% set badge_class = 'bg-success' %}
+{% elseif type_value == 'internship' or type_value == 'thesis' %}
+  {% set badge_class = 'bg-danger' %} 
+{% endif %}
+
+
+<article{{ attributes.addClass(classes) }}>
+  
+  <div class="row g-0 align-items-center">
+
+    {# --- LEFT COLUMN: LOGO --- #}
+    <div class="col-md-4 col-lg-3 d-flex justify-content-center align-items-center mb-0">
+      
+      {# 1. Fallback Settings #}
+      {% set image_url = '/sites/default/files/logo_0.svg' %}
+      {% set image_alt = 'Default Logo' %}
+
+      {# 2. Logic #}
+      {% set sponsor = node.field_bedrijf.entity %}
+      {% if sponsor %}
+        {% if sponsor.field_logo.entity.uri.value %}
+            {% set image_url = file_url(sponsor.field_logo.entity.uri.value) %}
+            {% set image_alt = sponsor.field_logo.alt %}
+        {% elseif sponsor.field_logo.entity.field_media_image.entity.uri.value %}
+            {% set image_url = file_url(sponsor.field_logo.entity.field_media_image.entity.uri.value) %}
+            {% set image_alt = sponsor.field_logo.entity.field_media_image.alt %}
+        {% endif %}
+      {% endif %}
+
+      {# 3. Render #}
+      <a href="{{ url }}" rel="bookmark">
+        <img src="{{ image_url }}" alt="{{ image_alt }}" class="img-fluid" style="max-height: 100px; width: auto;">
+      </a>
+
+    </div>
+
+    {# --- RIGHT COLUMN: CONTENT --- #}
+    <div class="col-md-8 col-lg-9 mb-0">
+      
+      {# Title #}
+      <h4 class="mb-2">
+        <a href="{{ url }}" rel="bookmark" class="text-decoration-none">
+          {{ node.label }}
+        </a>
+      </h4>
+
+      {% if not node.field_bedrijf.isEmpty() %}
+         <span class="badge rounded-pill bg-primary">
+            {{ sponsor.label }}
+         </span>
+      {% endif %}
+
+      {# Type Badge #}
+      {% if type_value %}
+        <span class="badge rounded-pill mb-3 {{ badge_class }}">
+          {{ type_label }}
+        </span>
+      {% endif %}
+
+      {% if not node.field_deadline.isEmpty() %}
+        <span class="badge rounded-pill mb-3 bg-primary">
+          {{ node.field_deadline.value|date('U')|format_date('custom', 'd M Y') }}
+        </span>
+      {% endif %}
+
+      {# Body Teaser #}
+      {# Added 'mb-0' class to remove the default paragraph margin at the bottom #}
+      {# Added 'last-child-mb-0' utility logic if needed via CSS, but usually direct mb-0 on wrapper helps #}
+      <div class="text-muted mb-0">
+        {{ content.body }}
+      </div>
+
+    </div>
+
+  </div>
+
+  {{ content|without(
+      'body', 
+      'field_bedrijf', 
+      'field_type', 
+      'field_deadline',
+  ) }}
+
+</article>

@@ -1,0 +1,88 @@
+{#
+/**
+ * @file
+ * Theme implementation for the Vacature Teaser.
+ */
+#}
+{%
+  set classes = [
+    'node',
+    'node--type-' ~ node.bundle|clean_class,
+    node.isPromoted() ? 'node--promoted',
+    node.isSticky() ? 'node--sticky',
+    not node.isPublished() ? 'node--unpublished',
+    view_mode ? 'node--view-mode-' ~ view_mode|clean_class,
+    'contextual-region',
+    'article',
+    'clearfix',
+  ]
+%}
+
+{# --- BADGE COLOR LOGIC --- #}
+{% set type_value = node.field_type.value %}
+{# We use content.field_type for the label to respect translations #}
+{% set type_label = content.field_type|render|striptags|trim %}
+{% set badge_class = 'bg-secondary' %}
+
+{% if type_value == 'fulltime' %}
+  {% set badge_class = 'bg-warning' %}
+{% elseif type_value == 'parttime' %}
+  {% set badge_class = 'bg-info text-dark' %}
+{% elseif type_value == 'bijles' %}
+  {% set badge_class = 'bg-success' %}
+{% elseif type_value == 'internship' or type_value == 'thesis' %}
+  {% set badge_class = 'bg-danger' %} 
+{% endif %}
+
+<article{{ attributes.addClass(classes) }}>
+
+  {# 1. Title with "Vacature:" Prefix #}
+  {{ title_prefix }}
+  {% if label and not page %}
+    <h2{{ title_attributes }}>
+      <a href="{{ url }}" rel="bookmark">Vacature: {{ label }}</a>
+    </h2>
+  {% endif %}
+  {{ title_suffix }}
+
+  <div{{ content_attributes.addClass('content') }}>
+    
+    {# --- 2. Badges Area --- #}
+    {# Added a wrapper div to keep spacing clean #}
+    <div class="vacancy-badges mb-3"> 
+
+    {# BEDRIJF (COMPANY) BADGE - RESTORED #}
+      {# You filtered this out below, so we MUST print it here #}
+      {% if not node.field_bedrijf.isEmpty() %}
+         <span class="badge rounded-pill bg-secondary">
+            {{ node.field_bedrijf.value }}
+         </span>
+      {% endif %}
+      
+      {# TYPE BADGE #}
+      {% if type_value %}
+        <span class="badge rounded-pill {{ badge_class }}">
+          {{ type_label }}
+        </span>
+      {% endif %}
+
+      {# DEADLINE BADGE #}
+      {% if not node.field_deadline.isEmpty() %}
+        <span class="badge rounded-pill bg-primary">
+          {{ node.field_deadline.value|date('U')|format_date('custom', 'd M Y') }}
+        </span>
+      {% endif %}
+    </div>
+
+    {# --- 3. Body Text & Remaining Content --- #}
+    {# 
+       We exclude:
+       - field_type (Manually printed above)
+       - field_bedrijf (Manually printed above)
+       - field_deadline (Manually printed above - added to list to prevent duplication)
+    #}
+    {{ content|without('field_type', 'field_bedrijf', 'field_deadline') }}
+    
+  </div> {# <--- Only ONE closing div for content #}
+
+</article>
