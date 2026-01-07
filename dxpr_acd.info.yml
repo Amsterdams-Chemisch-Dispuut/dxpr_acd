@@ -23,7 +23,7 @@ regions:
   page_bottom: 'Page bottom'
 
 libraries:
-  - dxpr_theme_STARTERKIT/global-styling
+  - dxpr_acd/global-styling
 
 #
 # Uncomment to override libraries as needed.

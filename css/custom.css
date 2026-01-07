@@ -28,3 +28,49 @@ var(--dxt-setting-navbar-background) */
     display: none !important;
   }
 }
+
+.fc-event-title { text-wrap: auto; }
+
+/* Target the form specifically for safety */
+#views-form-todo-block-1-1 {
+
+    /* Hide the top button wrapper (the one with the --2 suffix) */
+    #edit-actions--2 {
+        display: none !important;
+    }
+}
+
+/* .btn-primary,
+.btn:hover { color: #fff !important; }
+.tabs__link.page-link { color: var(--dxt-color-base) !important; }
+.btn-primary:disabled,
+.btn-primary[disabled] {background-color: var(--dxt-color-base) !important; 
+border-color: var(--dxt-color-base) !important;}
+.btn-primary:hover { background-color: var(--dxt-color-accent1) !important; }
+.btn-secondary:hover { background-color: var(--dxt-color-base) !important; }
+
+:root {
+  --dxpr-link-color: var(--dxt-color-base) !important;
+  --dxpr-link-hover-color: var(--dxt-color-base);
+  --dxpr-link-active-color:var(--dxt-color-base);
+  --dxpr-link-visited-color: var(--dxt-color-base);
+}
+a:link {
+  color: var(--dxpr-link-color);
+}
+a:visited {
+  color: var(--dxpr-link-visited-color);
+} */
+
+/* Change colors of FullCalendar (Activiteiten) */
+.fc .fc-daygrid-day-number {
+  color: var(--dxt-color-base);
+}
+
+.fc-day-today { background-color: rgba(247, 226, 182, 0.30) !important;}
+
+
+.bs-dropdown-caret { border: 0px !important; }
+
+
+.carousel-item > div > div > h3 > a { text-decoration: none; }
