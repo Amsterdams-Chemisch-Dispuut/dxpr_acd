@@ -77,18 +77,11 @@
               <h5 class="fw-bold mb-1">{{ 'When'|t }}</h5>
               <div class="text-muted">
                 {% if not node.field_datum.isEmpty() %}
-                  {# 
-                     DATE FIX (The "Zulu" Method):
-                     1. Get RAW DB String (e.g., '2026-01-09T16:00:00').
-                     2. Append 'Z' to force PHP to treat it as UTC input.
-                     3. Parse to Timestamp.
-                     4. format_date will then correctly add +1/+2 hours for Amsterdam.
-                  #}
+                  {# Date Logic #}
                   {% set start_raw = node.field_datum.value %}
                   {% set end_raw = node.field_datum.end_value %}
                   
                   {% if start_raw %}
-                    {# Append 'Z' (UTC) to string, convert to timestamp #}
                     {% set start_ts = (start_raw ~ 'Z')|date('U') %}
                     
                     {% if end_raw %}
@@ -109,7 +102,7 @@
             </div>
           </div>
 
-          {# --- LOCATION SECTION (Untouched) --- #}
+          {# --- LOCATION SECTION --- #}
           {# Initialize variables #}
           {% set addr_item = null %}
           
@@ -134,8 +127,6 @@
               <div>
                 <h5 class="fw-bold mb-1">{{ 'Where'|t }}</h5>
                 <div class="text-muted">
-                  
-                  {# Address Field vs Text Field check #}
                   {% if addr_item.address_line1 is defined or addr_item.locality is defined %}
                     {% if addr_item.organization %}{{ addr_item.organization }}<br>{% endif %}
                     {% if addr_item.address_line1 %}{{ addr_item.address_line1 }}<br>{% endif %}
@@ -144,7 +135,24 @@
                   {% else %}
                     {{ addr_item.value|nl2br }}
                   {% endif %}
+                </div>
+              </div>
+            </div>
+          {% endif %}
 
+          {# --- COMMISSIE (COMMITTEE) SECTION --- #}
+          {% if not node.field_commissie.isEmpty() %}
+            <div class="d-flex mb-3">
+              <div class="me-3 text-secondary">
+                {# Bootstrap Person/Group Icon #}
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-people-fill" viewBox="0 0 16 16">
+                  <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7Zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-5.784 6A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216ZM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"/>
+                </svg>
+              </div>
+              <div>
+                <h5 class="fw-bold mb-1">{{ 'Committee'|t }}</h5>
+                <div class="text-muted">
+                  {{ content.field_commissie }}
                 </div>
               </div>
             </div>
@@ -157,6 +165,6 @@
   </div>
 
   {# Clean remaining content #}
-  {{ content|without('field_afbeelding', 'field_activity_beschrijving', 'field_datum', 'field_locatie', 'field_location', 'field_pretix') }}
+  {{ content|without('field_afbeelding', 'field_activity_beschrijving', 'field_datum', 'field_locatie', 'field_location', 'field_pretix', 'field_commissie') }}
 
 </article>
