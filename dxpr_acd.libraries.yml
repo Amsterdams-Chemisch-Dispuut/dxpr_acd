@@ -8,6 +8,7 @@ global-styling:
   js:
     js/carousel-events.js: {}
     js/carousel-sponsors.js: {}
+    js/cards-events.js: {}
   dependencies:
     - core/jquery
     - core/drupal
