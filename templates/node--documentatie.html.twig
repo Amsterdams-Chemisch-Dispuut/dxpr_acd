@@ -1,0 +1,96 @@
+{#
+/**
+ * @file
+ * Theme override to display a 'Documentatie' node (Full View).
+ */
+#}
+
+{%
+  set classes = [
+    'node',
+    'node--type-' ~ node.bundle|clean_class,
+    view_mode ? 'node--view-mode-' ~ view_mode|clean_class,
+    'clearfix',
+  ]
+%}
+
+{# --- 1. DATA LOGIC --- #}
+{# Get the raw machine name for the Logic (e.g., 'ict') #}
+{% set cat_value = node.field_docs_category.value %}
+
+{# Get the Human Readable Label (stripped of DIVs) for the Button Text #}
+{% set cat_label = content.field_docs_category|render|striptags|trim %}
+
+{# --- 2. COLOR LOGIC --- #}
+{% set btn_class = 'btn-secondary' %}
+
+{% if cat_value == 'ict' %}
+  {% set btn_class = 'btn-info' %}
+{% elseif cat_value == 'bestuur' %}
+  {% set btn_class = 'btn-dark' %}
+{% elseif cat_value == 'inhoud' %}
+  {% set btn_class = 'btn-success' %}
+   
+{% elseif cat_value == 'hr' %}
+  {% set btn_class = 'btn-danger' %}
+{% elseif cat_value == 'legal' %}
+  {% set btn_class = 'btn-warning' %}
+{% elseif cat_value == 'marketing' %}
+  {% set btn_class = 'btn-light border' %}
+{% endif %}
+
+{# Hide the category AND the links from the main content array #}
+{% set content = content|without('field_docs_category', 'field_links') %}
+
+<article{{ attributes.addClass(classes) }}>
+
+  <div class="card shadow-sm mb-4">
+    
+    {# --- HEADER: Title --- #}
+    <div class="card-header bg-light py-3">
+      <h2 class="card-title h4 m-0 fw-bold">
+        {{ label }}
+      </h2>
+    </div>
+
+    {# --- BODY: Button + Text --- #}
+    <div class="card-body p-4">
+      
+      {# Category Button Link & Field Links Wrapper #}
+      {# Added d-flex and gap-2 to make them sit inline #}
+      <div class="mb-3 d-flex flex-wrap align-items-center gap-2">
+        
+        {# 1. The Category #}
+        {% if cat_value %}
+          <a href="/docs/{{ cat_value }}" class="btn {{ btn_class }} btn-sm rounded-pill px-3">
+            {{ cat_label }}
+          </a>
+        {% endif %}
+
+        {# 2. The Inline Links #}
+        {% for link in node.field_links %}
+          <a href="{{ link.url }}" class="btn btn-outline-secondary btn-sm rounded-pill px-3">
+            {{ link.title }}
+          </a>
+        {% endfor %}
+
+      </div>
+
+      {# Full Body Text #}
+      <div class="card-text">
+        {{ content.body }}
+      </div>
+
+    </div>
+    
+    {# --- FOOTER: Edit Button --- #}
+    {# Only show this footer if the user has permission to edit this node #}
+      <div class="card-footer bg-transparent border-top-0 text-end pb-3 pe-4">
+        <a href="{{ path('entity.node.edit_form', {'node': node.id}) }}?destination=/docs/" class="btn btn-outline-secondary btn-sm">
+          Bewerken
+        </a>
+      </div>
+    
+  </div>
+
+</article>
