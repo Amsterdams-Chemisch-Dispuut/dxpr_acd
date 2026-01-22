@@ -1,0 +1,60 @@
+{#
+/**
+ * @file
+ * Theme override to display a node of type 'artikel' in 'teaser' mode.
+ */
+#}
+{%
+  set classes = [
+    'node',
+    'node--type-' ~ node.bundle|clean_class,
+    node.isPromoted() ? 'node--promoted',
+    node.isSticky() ? 'node--sticky',
+    not node.isPublished() ? 'node--unpublished',
+    view_mode ? 'node--view-mode-' ~ view_mode|clean_class,
+  ]
+%}
+<article{{ attributes.addClass(classes) }}>
+
+  {{ title_prefix }}
+  {# Teasers usually need a title linking to the content #}
+  {% if label and not page %}
+    <h2{{ title_attributes }}>
+      <a href="{{ url }}" rel="bookmark">{{ label }}</a>
+    </h2>
+  {% endif %}
+  {{ title_suffix }}
+
+  <div{{ content_attributes.addClass('node__content') }}>
+    
+    {# --- START CUSTOM LOGIC --- #}
+
+    {# Check if the image field has data (using the raw node object) #}
+    {% if node.field_image is not empty %}
+      
+      {# Option A: Image Exists - Render the image field #}
+      <div class="teaser-media">
+        {{ content.field_image }}
+      </div>
+
+    {% else %}
+
+      {# Option B: No Image - Render the Body text #}
+      <div class="teaser-text">
+        {{ content.body }}
+      </div>
+
+    {% endif %}
+
+    {# --- END CUSTOM LOGIC --- #}
+
+    {# 
+      Render everything else (e.g., Tags, Links) that you enabled 
+      in 'Manage Display', BUT exclude the image and body 
+      since we manually printed them above.
+    #}
+    {{ content|without('field_image', 'body') }}
+
+  </div>
+
+</article>
