@@ -43,7 +43,7 @@
       {% set image_alt = 'Default Logo' %}
 
       {# 2. Logic #}
-      {% set sponsor = node.field_bedrijf.entity %}
+      {% set sponsor = node.field_bedrijf.entity ?? null %}
       {% if sponsor %}
         {% if sponsor.field_logo.entity.uri.value %}
             {% set image_url = file_url(sponsor.field_logo.entity.uri.value) %}
@@ -86,7 +86,9 @@
 
       {% if not node.field_deadline.isEmpty() %}
         <span class="badge rounded-pill mb-3 bg-primary">
-          {{ node.field_deadline.value|date('U')|format_date('custom', 'd M Y') }}
+          {% if node.field_deadline.value is not empty %}
+            {{ node.field_deadline.value|date('U')|format_date('custom', 'd M Y') }}
+          {% endif %}
         </span>
       {% endif %}
 

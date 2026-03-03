@@ -11,6 +11,9 @@
   .nav-item.dropdown:hover > .dropdown-menu { display: block !important; visibility: visible !important; opacity: 1 !important; }
 }
 
+.nav-link:hover { border-radius: 6px !important; }
+.nav-link { border-radius: 6px !important; }
+
 /* Menu Item Styling */
 .bs-dropdown-wrapper { display: inline-flex !important; align-items: stretch; border-radius: 6px !important; overflow: hidden; background-color: transparent; transition: background-color 0.15s ease; }
 #navbar .nav-item.dropdown:hover .bs-dropdown-wrapper { background-color: var(--dxpr-theme-secondary-bg) !important; }

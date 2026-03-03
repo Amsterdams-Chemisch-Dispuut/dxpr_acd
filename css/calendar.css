@@ -1,0 +1,55 @@
+
+/* 1. Allow the event container (the link) to grow taller */
+.fc-day-grid-event {
+    height: auto !important;
+    white-space: normal !important;
+}
+
+/* 2. Target the inner content wrapper to allow text wrapping */
+.fc-day-grid-event .fc-content {
+    white-space: normal !important;
+    overflow: visible !important;
+}
+
+/* 3. Ensure the title text specifically wraps */
+.fc-day-grid-event .fc-title {
+    white-space: normal !important;
+    overflow-wrap: break-word !important; /* Prevents long words from cutting off */
+    display: inline !important; /* keeps it flowing after the time */
+}
+
+/* 1. Base State for Primary Buttons */
+.fc-button-primary {
+    background-color: var(--dxt-color-base) !important;
+    border-color: var(--dxt-color-base) !important;
+    color: #fff !important; /* Ensures text remains white */
+    box-shadow: none !important; /* Removes default box-shadows if any */
+}
+
+/* 2. Hover and Focus States */
+.fc-button-primary:hover,
+.fc-button-primary:focus {
+    /* Slightly darken the color on hover/focus for feedback */
+    background-color: var(--dxt-color-base) !important;
+    border-color: var(--dxt-color-base) !important;
+    filter: brightness(0.9); 
+}
+
+/* 3. The ACTIVE State (Selected View) */
+/* This targets the button that is currently active (e.g., 'month' vs 'list') */
+.fc-button-primary:not(:disabled).fc-button-active,
+.fc-button-primary:not(:disabled):active {
+    background-color: var(--dxt-color-base) !important;
+    border-color: var(--dxt-color-base) !important;
+    
+    /* Optional: Make the active button look distinct (e.g., darker) */
+    filter: brightness(0.85); 
+}
+
+/* 4. Disabled State (e.g., the 'Today' button when already on today) */
+.fc-button-primary:disabled {
+    background-color: var(--dxt-color-base) !important;
+    border-color: var(--dxt-color-base) !important;
+    opacity: 0.6 !important; /* Makes it look "faded" or disabled */
+    cursor: not-allowed;
+}

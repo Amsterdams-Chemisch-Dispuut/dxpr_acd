@@ -19,7 +19,7 @@
 %}
 
 {# --- BADGE COLOR LOGIC --- #}
-{% set type_value = node.field_type.value %}
+{% set type_value = node.field_type.value ?? null %}
 {% set type_label = content.field_type|render|striptags|trim %}
 {% set badge_class = 'bg-secondary' %}
 
@@ -54,21 +54,20 @@
         {# --- BOX 1: SPONSOR --- #}
         {% if not node.field_bedrijf.isEmpty() %}
               
-              {# A. Get Sponsor Entity #}
-              {% set sponsor = node.field_bedrijf.entity %}
-
-              {# B. Resolve Image URL (Handles both Media Entities and Direct Images) #}
+              {% set sponsor = node.field_bedrijf.entity ?? null %}
               {% set image_url = '' %}
               {% set image_alt = '' %}
 
-              {# Try Direct Image Field first #}
-              {% if sponsor.field_logo.entity.uri.value %}
-                 {% set image_url = file_url(sponsor.field_logo.entity.uri.value) %}
-                 {% set image_alt = sponsor.field_logo.alt %}
-              {# Try Media Entity Reference (Common in modern Drupal) #}
-              {% elseif sponsor.field_logo.entity.field_media_image.entity.uri.value %}
-                 {% set image_url = file_url(sponsor.field_logo.entity.field_media_image.entity.uri.value) %}
-                 {% set image_alt = sponsor.field_logo.entity.field_media_image.alt %}
+              {% if sponsor and sponsor.field_logo is not empty %}
+                {% set logo = sponsor.field_logo.entity ?? null %}
+
+                {% if logo and logo.uri is defined %}
+                  {% set image_url = file_url(logo.uri.value) %}
+                  {% set image_alt = sponsor.field_logo.alt ?? '' %}
+                {% elseif logo and logo.field_media_image is defined and logo.field_media_image.entity %}
+                  {% set image_url = file_url(logo.field_media_image.entity.uri.value) %}
+                  {% set image_alt = logo.field_media_image.alt ?? '' %}
+                {% endif %}
               {% endif %}
 
               {# C. Render Logo Wrapped in Link #}

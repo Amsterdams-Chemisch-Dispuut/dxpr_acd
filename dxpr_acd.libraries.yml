@@ -5,6 +5,7 @@ global-styling:
       css/newsletter.css: { minified: false, weight: 5 }
       css/navbar.css: { minified: false, weight: 3 }
       css/pretix.css: { minified: false, weight: 7 }
+      css/calendar.css: { minified: false, weight: 8 }
   js:
     js/carousel-events.js: {}
     js/carousel-sponsors.js: {}

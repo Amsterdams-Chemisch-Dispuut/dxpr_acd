@@ -62,13 +62,6 @@ a:visited {
   color: var(--dxpr-link-visited-color);
 } */
 
-/* Change colors of FullCalendar (Activiteiten) */
-.fc .fc-daygrid-day-number {
-  color: var(--dxt-color-base);
-}
-
-.fc-day-today { background-color: rgba(247, 226, 182, 0.30) !important;}
-
 
 .bs-dropdown-caret { border: 0px !important; }
 
